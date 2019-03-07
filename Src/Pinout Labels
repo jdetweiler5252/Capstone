@@ -1,0 +1,8 @@
+
+PA7 Motor Control (M2)
+PA 5 PWM -CN1-6 (E2)
+PA 2,3,4 tx,rx,ck USART 
+CN1-3
+CN3-5
+CN3-8
+ADC PC0 CN4-6
