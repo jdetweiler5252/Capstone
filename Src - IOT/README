@@ -1,0 +1,18 @@
+IOT Board Pinout - Created Using Atollic TRUE STUDIO
+
+PA7 Motor Control CN1-4 1=Right, 0=Left.
+PA 5 PWM -CN1-6 Controls Speed
+PA1 PWM CN3-1 - Does Nothing
+pb14 green led
+PC 4,5, tx,rx, USART 
+CN4-2
+CN4-1
+ADC PC0 CN4-6
+
+CNX-X Refers to Positon on the connectors to the board.
+Used Material:
+  User Manual For Board
+    https://www.st.com/content/ccc/resource/technical/document/user_manual/group0/b1/b8/7a/f2/f7/8d/4b/6b/DM00347848/files/DM00347848.pdf/jcr:content/translations/en.DM00347848.pdf
+  Examples on IOT Board
+    https://www.st.com/en/embedded-software/stm32cubel4.html
+
