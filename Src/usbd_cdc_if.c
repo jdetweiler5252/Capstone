@@ -60,7 +60,7 @@
 
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
-extern uint8_t receiveData[4];
+extern uint8_t recieve_data[64];
 /* USER CODE END PV */
 
 /** @addtogroup STM32_USB_OTG_DEVICE_LIBRARY
@@ -291,12 +291,12 @@ static int8_t CDC_Control_FS(uint8_t cmd, uint8_t* pbuf, uint16_t length)
 static int8_t CDC_Receive_FS(uint8_t* Buf, uint32_t *Len)
 {
   /* USER CODE BEGIN 6 */
+	for(int i =0;i<sizeof(Len-1);i++){
+		recieve_data[i]=Buf[i];
+	}
   USBD_CDC_SetRxBuffer(&hUsbDeviceFS, &Buf[0]);
   USBD_CDC_ReceivePacket(&hUsbDeviceFS);
-  Buf[0]=receiveData[0];
-  Buf[1]=receiveData[1];
-  Buf[2]=receiveData[2];
-  Buf[3]=receiveData[3];
+
   return (USBD_OK);
   /* USER CODE END 6 */
 }

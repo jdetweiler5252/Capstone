@@ -79,11 +79,21 @@ static void MX_ADC1_Init(void);
 /* USER CODE BEGIN PFP */
 void artRx();
 void artTx();
-uint8_t receiveData[4]="";
-uint8_t sendData[4]="";
+uint8_t receiveData[4];
+uint8_t sendData[50]="";
 uint8_t recieve_data[64];
 uint8_t seg4_data[9]={0,1,2,3,4,5,6,7,8};
-uint16_t adcValue;
+uint32_t gasValue;
+uint32_t brakeValue;
+uint32_t motorValue;
+uint8_t buttonA[] = "A0";
+uint8_t buttonB[] = "B0";
+uint8_t buttonX[] = "X0";
+uint8_t buttonY[] = "Y0";
+uint8_t buttonU[] = "U0"; // RightB
+uint8_t buttonD[] = "R0"; // LeftB
+uint8_t buttonS[] = "S0"; // start
+uint8_t buttonR[] = "R0"; // back
 int g_MeasurementNumber;
 
 /* USER CODE END PFP */
@@ -128,6 +138,7 @@ void displayGear(int gear){
 
 void displayseg(int gear){
 
+
 	HAL_GPIO_WritePin(GPIOE, GPIO_PIN_7|GPIO_PIN_8|GPIO_PIN_9|GPIO_PIN_10|GPIO_PIN_11|GPIO_PIN_12|GPIO_PIN_13, GPIO_PIN_SET);
 			if(gear==1){
 				HAL_GPIO_WritePin(GPIOE,GPIO_PIN_8|GPIO_PIN_9, GPIO_PIN_RESET);
@@ -161,6 +172,128 @@ void displayseg(int gear){
 			}
 }
 
+void GBM(){
+
+}
+
+void buttons(){
+
+	if(HAL_GPIO_ReadPin(GPIOD,GPIO_PIN_1)){
+		if(buttonA[1]=='1'){
+		  buttonA[0] = 'A';
+		  buttonA[1] = '0';
+		  CDC_Transmit_FS(buttonA,(uint16_t) strlen(buttonA));
+		}
+	}
+	else{
+		if(buttonA[1]=='0'){
+			  buttonA[0] = 'A';
+			  buttonA[1] = '1';
+				  CDC_Transmit_FS(buttonA,(uint16_t) strlen(buttonA));
+				}
+	}
+
+	if(HAL_GPIO_ReadPin(GPIOD,GPIO_PIN_2)){
+		if(buttonB[1]=='1'){
+		  buttonB[0] = 'B';
+		  buttonB[1] = '0';
+		  CDC_Transmit_FS(buttonB,(uint16_t) strlen(buttonB));
+		}
+	}
+	else{
+		if(buttonB[1]=='0'){
+			  buttonB[0] = 'B';
+			  buttonB[1] = '1';
+				  CDC_Transmit_FS(buttonB,(uint16_t) strlen(buttonB));
+				}
+	}
+	if(HAL_GPIO_ReadPin(GPIOD,GPIO_PIN_3)){
+		if(buttonX[1]=='1'){
+		  buttonX[0] = 'X';
+		  buttonX[1] = '0';
+		  CDC_Transmit_FS(buttonX,(uint16_t) strlen(buttonX));
+		}
+	}
+	else{
+		if(buttonX[1]=='0'){
+			  buttonX[0] = 'X';
+			  buttonX[1] = '1';
+				  CDC_Transmit_FS(buttonX,(uint16_t) strlen(buttonX));
+				}
+	}
+	if(HAL_GPIO_ReadPin(GPIOD,GPIO_PIN_4)){
+		if(buttonY[1]=='1'){
+		  buttonY[0] = 'Y';
+		  buttonY[1] = '0';
+		  CDC_Transmit_FS(buttonY,(uint16_t) strlen(buttonY));
+		}
+	}
+	else{
+		if(buttonY[1]=='0'){
+			  buttonY[0] = 'Y';
+			  buttonY[1] = '1';
+				  CDC_Transmit_FS(buttonY,(uint16_t) strlen(buttonY));
+				}
+	}
+
+	if(HAL_GPIO_ReadPin(GPIOD,GPIO_PIN_5)){
+		if(buttonD[1]=='1'){
+		  buttonD[0] = 'D';
+		  buttonD[1] = '0';
+		  CDC_Transmit_FS(buttonD,(uint16_t) strlen(buttonD));
+		}
+	}
+	else{
+		if(buttonD[1]=='0'){
+			  buttonD[0] = 'D';
+			  buttonD[1] = '1';
+				  CDC_Transmit_FS(buttonD,(uint16_t) strlen(buttonD));
+				}
+	}
+	if(HAL_GPIO_ReadPin(GPIOD,GPIO_PIN_6)){
+		if(buttonU[1]=='1'){
+		  buttonU[0] = 'U';
+		  buttonU[1] = '0';
+		  CDC_Transmit_FS(buttonU,(uint16_t) strlen(buttonU));
+		}
+	}
+	else{
+		if(buttonU[1]=='0'){
+			  buttonU[0] = 'U';
+			  buttonU[1] = '1';
+				  CDC_Transmit_FS(buttonU,(uint16_t) strlen(buttonU));
+				}
+	}
+	if(HAL_GPIO_ReadPin(GPIOC,GPIO_PIN_0)){
+		if(buttonS[1]=='1'){
+		  buttonS[0] = 'S';
+		  buttonS[1] = '0';
+		  CDC_Transmit_FS(buttonS,(uint16_t) strlen(buttonS));
+		}
+	}
+	else{
+		if(buttonS[1]=='0'){
+			  buttonS[0] = 'S';
+			  buttonS[1] = '1';
+				  CDC_Transmit_FS(buttonS,(uint16_t) strlen(buttonS));
+				}
+	}
+	if(HAL_GPIO_ReadPin(GPIOC,GPIO_PIN_1)){
+		if(buttonR[1]=='1'){
+		  buttonR[0] = 'R';
+		  buttonR[1] = '0';
+		  CDC_Transmit_FS(buttonR,(uint16_t) strlen(buttonR));
+		}
+	}
+	else{
+		if(buttonR[1]=='0'){
+			  buttonR[0] = 'R';
+			  buttonR[1] = '1';
+				  CDC_Transmit_FS(buttonR,(int16_t) strlen(buttonR));
+				}
+	}
+
+}
 void recieve(){
 
 	switch(recieve_data[0]){
@@ -171,10 +304,13 @@ void recieve(){
 		else if(recieve_data[1]=='n'){
 			HAL_GPIO_WritePin(GPIOD,GPIO_PIN_0,0);
 		}
+		sendData[0]=recieve_data[0];
+		sendData[1]=recieve_data[1];
+		artTx();
 		recieve_data[0]='0';
 		recieve_data[1]='0';
 		break;
-	}
+	}/*
 	case 'B':{
 		if(recieve_data[1]=='y'){
 			HAL_GPIO_WritePin(GPIOD,GPIO_PIN_1,1);
@@ -186,6 +322,7 @@ void recieve(){
 		recieve_data[1]='0';
 		break;
 	}
+	*/
 	case 'C':{
 		if(recieve_data[1]=='y'){
 			HAL_GPIO_WritePin(GPIOD,GPIO_PIN_2,1);
@@ -208,17 +345,7 @@ void recieve(){
 		recieve_data[1]='0';
 		break;
 	}
-	case 'E':{
-		if(recieve_data[1]=='y'){
-			HAL_GPIO_WritePin(GPIOD,GPIO_PIN_4,1);
-		}
-		else if(recieve_data[1]=='n'){
-			HAL_GPIO_WritePin(GPIOD,GPIO_PIN_4,0);
-		}
-		recieve_data[0]='0';
-		recieve_data[1]='0';
-		break;
-	}
+
 	case 'F':{
 		if(recieve_data[1]=='y'){
 			HAL_GPIO_WritePin(GPIOD,GPIO_PIN_5,1);
@@ -232,12 +359,12 @@ void recieve(){
 	}
 	case 'G':{
 		seg4_data[9]=recieve_data[1];
-
+		recieve_data[0]='0';
+		recieve_data[1]='0';
 		break;
 	}
 
 	case 'M':{
-		//displayGear(recieve_data[1]);
 		sendData[0]=recieve_data[0];
 		sendData[1]=recieve_data[1];
 		artTx();
@@ -258,7 +385,73 @@ void recieve(){
 		}
 		break;
 	}
+	case 'N':{
+		sendData[0]=recieve_data[0];
+		for(int i =1;i!=0;i++){
+					sendData[i]=recieve_data[i];
+					if(recieve_data[i]=='\0')
+						break;
+				}
+		artTx();
+		break;
 	}
+	case 'L':{
+			sendData[0]=recieve_data[0];
+			sendData[1]=recieve_data[1];
+			sendData[2]=recieve_data[2];
+			artTx();
+			break;
+		}
+	case 'P':{
+			sendData[0]='S';
+			sendData[1]=recieve_data[1];
+			sendData[2]=recieve_data[2];
+			artTx();
+			break;
+		}
+	case 'H':{
+			sendData[0]='T';
+			sendData[1]=recieve_data[1];
+			artTx();
+			break;
+		}
+	case 'W':{
+			sendData[0]='W';
+			sendData[1]=recieve_data[1];
+			artTx();
+			break;
+		}
+	case 'B':{
+			sendData[0]='B';
+			sendData[1]=recieve_data[1];
+			artTx();
+			break;
+		}
+	case 'R':{
+			sendData[0]='G';
+			seg4_data[9]=recieve_data[1];
+			sendData[1]=recieve_data[1];
+			artTx();
+			break;
+		}
+	case 'U':{
+			sendData[0]='D';
+			sendData[1]=recieve_data[1];
+			sendData[2]=recieve_data[2];
+			artTx();
+			break;
+		}
+	case 'E':{
+			sendData[0]='E';
+			sendData[1]=recieve_data[1];
+			artTx();
+			break;
+		}
+	}
+	recieve_data[0]='0';
+	recieve_data[1]='0';
+	recieve_data[2]='0';
+
 
 }
 
@@ -347,8 +540,8 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
- // MX_USART6_UART_Init();
-  //MX_ADC1_Init();
+  MX_USART6_UART_Init();
+  MX_ADC1_Init();
   MX_USB_DEVICE_Init();
   /* USER CODE BEGIN 2 */
 
@@ -360,16 +553,33 @@ int main(void)
   {
     /* USER CODE END WHILE */
 
-	for(int i=0;i<9;i++){
-		seg4(i,seg4_data[i]);
-		HAL_Delay(1);
-	}
     /* USER CODE BEGIN 3 */
-	  uint8_t HiMsg[] = "he";
+	 // for(int i=0;i<9;i++){
+	//	  seg4(i,seg4_data[i]);
+	//  }
+	//  uint8_t HiMsg[] = "A1";
 
-	  CDC_Transmit_FS(HiMsg, strlen(HiMsg));
-	  recieve();
-	 	 // Receive();
+	//  CDC_Transmit_FS(HiMsg,(uint16_t) strlen(HiMsg));
+	  //recieve();
+	  buttons();
+	  HAL_ADC_Start(&hadc1);
+	  HAL_ADC_PollForConversion(&hadc1, 1000);
+	  gasValue=HAL_ADC_GetValue(&hadc1);
+	  HAL_ADC_Stop(&hadc1);
+	  HAL_ADC_Start(&hadc1);
+	  HAL_ADC_PollForConversion(&hadc1, 1000);
+	  brakeValue=HAL_ADC_GetValue(&hadc1);
+	  HAL_ADC_Stop(&hadc1);
+	  HAL_ADC_Start(&hadc1);
+	  HAL_ADC_PollForConversion(&hadc1, 1000);
+	  motorValue=HAL_ADC_GetValue(&hadc1);
+	  HAL_ADC_Stop(&hadc1);
+	  GBM();
+	 //  HiMsg[0] = 'A';
+	 //  HiMsg[1] = '0';
+	//  CDC_Transmit_FS(HiMsg,(uint16_t) strlen(HiMsg));
+	 // HAL_Delay(1000);
+
 
   }
   /* USER CODE END 3 */
@@ -574,7 +784,7 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pin = GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_3|GPIO_PIN_4 
                           |GPIO_PIN_5|GPIO_PIN_6;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
 
 }
@@ -582,12 +792,22 @@ static void MX_GPIO_Init(void)
 /* USER CODE BEGIN 4 */
 void artRx(){
 	receiveData[0]='0';
-	HAL_UART_Receive(&huart6,receiveData, sizeof(receiveData),100);
+	if(HAL_UART_Receive(&huart6,receiveData, sizeof(receiveData),1000)==HAL_BUSY){
+
+	}
+
 }
 
 void artTx(){
-	HAL_UART_Transmit(&huart6,sendData, sizeof(sendData),HAL_MAX_DELAY);
+	int a=0;
+	if(HAL_UART_Transmit(&huart6,sendData, sizeof(sendData),100)!=HAL_OK){
+		a++;
+	}
 	sendData[0]='0';
+}
+void send(){
+
+
 }
 /* USER CODE END 4 */
 
