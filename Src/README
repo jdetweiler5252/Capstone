@@ -1,0 +1,17 @@
+PINOUT For stm32F411E Board
+
+GpioE 7-15 (9) 7-13=a,b,c,d,e,f,g 14=seg0 15=seg1 
+GPIOD 7,8,9,10,11,12 (6) 7=seg2 8=seg3...
+}
+{
+GPIOD 0 Gear 7 Seg
+GPIOD 1-6(6) Buttons A,B,X,Y,LB,RB
+GPIOC 0-1(2) Buttons Start,Back
+}
+PA 1,2,3 ADC Gas,Brake, Wheel
+
+PC - 6,7USART tx,rx
+
+Used Material
+  User Manual
+    https://www.st.com/content/ccc/resource/technical/document/user_manual/e9/d2/00/5e/15/46/44/0e/DM00148985.pdf/files/DM00148985.pdf/jcr:content/translations/en.DM00148985.pdf
