@@ -1,6 +1,7 @@
 # Capstone
 Created by Jason Detweiler
 Email :jrd1326@gmail.com
+
 Each Path includes a README File including wire connections, functionality and references to used material.
 
 # User Interface
